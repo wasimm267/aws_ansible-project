@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Create ec2 instances
+    amazon.aws.ec2_instance:
+      name: "{{ item.name }}"
+      key_name: "wasim" #should have this keypair in aws
+      # vpc_subnet_id: subnet-013744e41e8088axx
+      instance_type: t2.micro
+      security_group: default
+      region: ca-central-1
+      aws_access_key: "{{ec2_access_key}}"  # From vault as defined
+      aws_secret_key: "{{ec2_secret_key}}"  # From vault as defined
+      network:
+        assign_public_ip: true
+      image_id: "{{ item.image }}"
+    loop:
+      - { image: "ami-0c0a551d0459e9d39", name: "manage-node1" }
+      - { image: "ami-0c0a551d0459e9d39", name: "manage-node2" }
+      - { image: "ami-0f9cb75652314425a", name: "manage-node3" }
+
